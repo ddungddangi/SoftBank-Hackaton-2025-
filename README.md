@@ -1,73 +1,94 @@
-# React + TypeScript + Vite
+# HikariFlow / 光フロー (Infra deploy assist service)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![Github Link](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github)](https://github.com/SoftBank-Hackaton-2025)
+[![Demonstration Video](https://img.shields.io/badge/YouTube-Demonstration_Video-FF0000?style=flat-square&logo=youtube)](https://www.youtube.com/shorts/yx84IUnlK5I)
 
-Currently, two official plugins are available:
+## 📌 プロジェクト概要
+- **大会名**: SoftBank Hackathon 2025（予選）
+- **開発期間**: 2025.11.02 ~ 2025.11.09（1週間）
+- **チーム構成**: フロントエンド 1名、バックエンド 2名、PM 1名、インフラ（メンバー全員で担当）
+- **技術スタック**: AWS Amplify, Amazon API Gateway, Amazon CloudFront, AWS WAF, Amazon S3, AWS Lambda, Amazon SQS, AWS Step Functions, Amazon CloudWatch, AWS Budgets, TypeScript
+- **担当役割**: フロントエンド & インフラエンジニア
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 💡 主な担当業務と成果
+* **サーバーレスバックエンドおよびRESTful APIエンドポイントの構築**
+  * AWS Lambdaを用いてサーバーレスバックエンドロジックを開発し、Amazon API Gatewayと統合しました。
+* **S3署名付きURL（Pre-signed URL）を活用したセキュアなファイルアップロード機能の実装**
+  * S3の事前署名URLを動的に生成してクライアントに配信するロジックを実装し、安全かつ効率的なファイルアップロード環境を保証しました。
+* **非同期処理を用いたイベント駆動型（Event-Driven）アーキテクチャの設計**
+  * Amazon API GatewayとLambdaの間にAmazon SQSを結合し、トラフィックを安全にキューイングする非同期処理パイプラインを構築しました。
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## WEBSITE
+<img width="1519" height="881" alt="image (6)" src="https://github.com/user-attachments/assets/ef945761-2e18-4848-9840-309af5c9bc6b" />
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🏗 Cloud Architecture
+<img width="994" height="664" alt="image (1) (2)" src="https://github.com/user-attachments/assets/c0a11f5a-450e-42ca-8d43-6ccc65adb50f" />
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🔄 User Flow （主な機能）
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. **ソースコードのアップロード**
+   - ユーザーは自身のソースコードをZIPファイルとしてアップロードします。
+   - S3の事前署名URL（Pre-Signed URL）を利用して安全にS3へ保存されます。
+   - 保存されたZIPファイルはAmazon Bedrockに送信され、プロジェクトの `<メタデータ>` を抽出・取得します。
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+2. **デプロイ要件に関するアンケートの実施**
+   - 「個人プロジェクト用か」「高可用性（High Availability）が必要か」などの要件をヒアリングします。
+   - 取得した `<メタデータ>` と `<アンケート結果>` をLLMに入力し、**AWS・GCP・Azure 用のTerraformコードを自動生成**します。
+   - 生成されたTerraformファイルを基に、各クラウドプロバイダーの**推定月額費用を算出**します。
+
+3. **クラウドプロバイダーの比較と選択**
+   - ユーザーは3社（AWS, GCP, Azure）のTerraformコードと推定コストを比較し、最適なクラウドを1つ選択します。
+   - 選択されたクラウド環境に合わせて、**GitHub Actionsファイル**および即座に実行可能な**SDK CLIコマンド集（Markdown形式）**が生成されます。
+
+4. **デプロイ作業の実行支援**
+   - ユーザーは生成されたガイド（Markdown）に従い、残りのデプロイ作業を迷わず簡単に進めることができます。
+   - クラウドコンソールへ直接遷移できるショートカットボタンが提供され、シームレスな作業をサポートします。
+
+---
+
+## 🛠 Functions （主要技術と採用理由）
+
+### AWS Amplify
+- フロントエンドの迅速なホスティングとデプロイのために採用。
+- Lambdaを活用したサーバーレスアーキテクチャによりバックエンドサーバーの管理が不要となり、CloudFront、AWS WAF、AWS Shieldなどのエッジ・セキュリティサービスとの連携も容易に実現しました。
+
+### Amazon API Gateway
+- 本システムは完全なイベント駆動型（Event-driven）アーキテクチャであるため、すべての通信はAPI Gatewayをフロントドアとして経由します。
+- アーキテクチャ図に記載された各APIパスのルーティングとトラフィック制御を担当しています。
+
+### AWS Lambda
+- イベント駆動型アプリケーションにおいて、最もコストパフォーマンスとスケーラビリティに優れたコンピュートサービスとして採用。
+- サーバーの常時稼働が不要なため、コスト効率の最適化に貢献しています。
+
+### Security
+- Amplifyに統合されたAWS WAFおよびAWS Shieldを活用し、アプリケーションレイヤーの基本的なセキュリティとDDoS保護を実装しました。
+
+### Monitoring
+- Amazon CloudWatchを利用して、LambdaおよびStep Functionsの実行状態（トリガーの成功可否）を監視し、迅速なトラブルシューティングを実施しました。
+- Step Functionsの実行ログからAI（Bedrock）の応答内容を解析し、プロンプトエンジニアリングの改善サイクルを回しました。
+
+---
+
+## 🤔 検討したポイント（アーキテクチャのトレードオフ）
+
+### CI/CDの完全自動化（ワンクリックデプロイ）を見送った理由
+> 現在の仕様では、ワンクリックでのフル自動デプロイではなく、**「ユーザーが生成されたファイルを基に自身でデプロイを実行する」**という支援型のアプローチを採用しています。
+
+- **セキュリティと想定外のリスク:**
+  Terraformファイルを基にAI（LLM）へユーザーのクラウドアカウントへの直接アクセス権を与え、CLIコマンドで自動デプロイさせることは技術的に可能です。しかし、ユーザーの環境でLLMが予期せぬリソースを生成した場合、**深刻なセキュリティインシデントや過剰課金（クラウド破産）**を引き起こすリスクが非常に高いと判断しました。
+- **権限設定のハードル:**
+  AIにクラウドリソースの生成を委譲する場合、IAMロールの厳密な設計やAccess Keyの発行など、高度な権限設定が要求されます。これは**「初心者開発者を支援する」**という本サービスのターゲット層にとって、初期設定のハードルが高すぎると考えました。
+- **結論:**
+  「AIが勝手にデプロイを代行する」のではなく、あくまで**「ユーザーが安全かつ簡単にデプロイを完遂できるようガイド（コードと手順）を提供する」**という方針に決定しました。
+
+---
+
+## 🚀
