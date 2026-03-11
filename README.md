@@ -4,6 +4,7 @@
 [![Demonstration Video](https://img.shields.io/badge/YouTube-Demonstration_Video-FF0000?style=flat-square&logo=youtube)](https://www.youtube.com/shorts/yx84IUnlK5I)
 
 ## 📌 プロジェクト概要
+- **プロジェクト説明**: サーバーレスアーキテクチャを活用したインフラ自動デプロイ支援サービス
 - **大会名**: SoftBank Hackathon 2025（予選）
 - **開発期間**: 2025.11.02 ~ 2025.11.09（1週間）
 - **チーム構成**: フロントエンド 1名、バックエンド 2名、PM 1名、インフラ（メンバー全員で担当）
@@ -20,14 +21,14 @@
 
 ---
 
-## WEBSITE
-<img width="1519" height="881" alt="image (6)" src="https://github.com/user-attachments/assets/ef945761-2e18-4848-9840-309af5c9bc6b" />
+## 🏗 Cloud Architecture
+<img width="994" height="664" alt="image (1) (2)" src="https://github.com/user-attachments/assets/c0a11f5a-450e-42ca-8d43-6ccc65adb50f" />
 
 
 ---
 
-## 🏗 Cloud Architecture
-<img width="994" height="664" alt="image (1) (2)" src="https://github.com/user-attachments/assets/c0a11f5a-450e-42ca-8d43-6ccc65adb50f" />
+## 💻 サイト画面 (Site Image)
+<img width="1519" height="881" alt="image (6)" src="https://github.com/user-attachments/assets/ef945761-2e18-4848-9840-309af5c9bc6b" />
 
 
 ---
@@ -91,4 +92,18 @@
 
 ---
 
-## 🚀
+## 🚀 サービスの今後の発展事項 (Future Works)
+
+### 1. SDKを活用したデプロイの自動化
+プロンプトエンジニアリングをさらに精緻化し、安全性が担保された十分な実行データが蓄積されれば、限定的なスコープ内でAIに直接デプロイを委譲するオプションの提供を検討します。
+
+### 2. Amazon Bedrock Agentへの進化
+現在は学習データ不足のため単一モデルの呼び出し（Single Prompting）に留まっていますが、利用データが蓄積された後は、Bedrock Agentを活用して「自律的に判断しアクションを実行する」特化型AIアシスタントへの進化を目指します。
+
+### 3. AI推論フローの精緻化（Plan & Executeパターンの導入）
+現在の `【ユーザーリクエスト】→【ファイル生成】→【保存】` という直線的なフローは、ハルシネーションやエラーの要因になり得ます。
+今後は `【ユーザーリクエスト】→【計画立案 (Plan)】→【ファイル生成 (Execute)】→【自己検証・最終確認 (Review)】→【保存】` という多段的な推論フローへの改修を構想しています。
+※今回はハッカソンの限られた開発期間とAPI呼び出しコストの制約により、実装を見送りました。
+
+### 4. 既存（デプロイ済み）アプリケーションの改善支援
+現在は新規プロジェクトのデプロイ支援に特化していますが、将来的には「すでに稼働中のサービス」に対しても、最適なCI/CDパイプラインの構築やインフラ構成の改善案を提示できる機能の拡張を計画しています。
